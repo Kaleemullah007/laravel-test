@@ -43,8 +43,10 @@ class CreateCinemaSchema extends Migration
 
         Schema::create('exhibitors', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')
+            $table->bigInteger('user_id')
+            ->unsigned();
+            $table->foreign(['user_id'])
+            ->references('id')->on('users')
                   ->onDelete('cascade');
             $table->string('company')->unique();
             $table->string('first_name')->nullable();
@@ -77,7 +79,7 @@ class CreateCinemaSchema extends Migration
         Schema::create('theaters', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('exhibitor_id')->unsigned();
-            $table->foreign('exhibitor_id')->references('id')
+            $table->foreign(['exhibitor_id'])->references('id')
                   ->on('exhibitors')->onDelete('cascade');
             $table->string('name');
             $table->string('address');
@@ -101,7 +103,7 @@ class CreateCinemaSchema extends Migration
 
             Schema::create('showtimes', function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('theater_id');
+                $table->bigInteger('theater_id');
                 $table->string('movie_id');
                 $table->date('date');
                 $table->string('time');
@@ -174,7 +176,8 @@ class CreateCinemaSchema extends Migration
                 // Setting plan can be managed by two ways like One is from the file and other you can save into the database
                 Schema::create('theater_plan_seats', function (Blueprint $table) {
                     $table->increments('id');
-                    $table->foreign('theater_id')->references('id')
+                    $table->integer('theater_id')->unsigned();
+                    $table->foreign(['theater_id'])->references('id')
                           ->on('theaters')->onDelete('cascade');
                     $table->json('chair_with_row')->nullable();
                     $table->timestamps();
